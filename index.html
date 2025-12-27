@@ -165,14 +165,20 @@
     .close-sidebar:hover { background: rgba(255, 255, 255, 0.1); }
     @media (min-width: 768px) { .close-sidebar { display: none; } }
 
-    .new-chat-btn {
-      margin: 20px;
+    .sidebar-buttons {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .new-chat-btn, .settings-btn {
       padding: 14px 20px;
-      background: linear-gradient(135deg, #ec4899, #a855f7);
       border: none;
       border-radius: 12px;
       color: white;
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 600;
       cursor: pointer;
       display: flex;
@@ -180,11 +186,21 @@
       justify-content: center;
       gap: 8px;
       transition: all 0.3s;
-      flex-shrink: 0;
+    }
+    .new-chat-btn {
+      background: linear-gradient(135deg, #ec4899, #a855f7);
     }
     .new-chat-btn:hover {
       transform: translateY(-2px);
       box-shadow: 0 10px 30px rgba(168, 85, 247, 0.4);
+    }
+    .settings-btn {
+      background: rgba(168, 85, 247, 0.2);
+      border: 1px solid rgba(168, 85, 247, 0.3);
+    }
+    .settings-btn:hover {
+      background: rgba(168, 85, 247, 0.3);
+      border-color: rgba(168, 85, 247, 0.5);
     }
 
     .chat-history {
@@ -257,7 +273,6 @@
     }
     .sidebar-footer .heart { color: #f472b6; }
     .sidebar-footer .creator { font-size: 11px; margin-top: 4px; color: rgba(168, 85, 247, 0.5); }
-    .sidebar-footer .powered { font-size: 10px; margin-top: 6px; color: rgba(168, 85, 247, 0.4); }
 
     /* Main Content */
     .main-content {
@@ -282,7 +297,7 @@
       flex-shrink: 0;
     }
     .header-left { display: flex; align-items: center; gap: 12px; }
-    .menu-btn {
+    .menu-btn, .header-btn {
       display: flex;
       padding: 10px;
       background: transparent;
@@ -292,7 +307,7 @@
       border-radius: 10px;
       transition: background 0.2s;
     }
-    .menu-btn:hover { background: rgba(255, 255, 255, 0.1); }
+    .menu-btn:hover, .header-btn:hover { background: rgba(255, 255, 255, 0.1); }
     @media (min-width: 768px) { .menu-btn { display: none; } }
     
     .header-logo {
@@ -309,44 +324,8 @@
     .header-title h2 { font-size: 15px; font-weight: 600; }
     .header-title p { font-size: 11px; color: #c084fc; }
     .header-actions { display: flex; gap: 8px; }
-    .header-btn {
-      display: none;
-      padding: 10px;
-      background: transparent;
-      border: none;
-      color: #c084fc;
-      cursor: pointer;
-      border-radius: 10px;
-      transition: all 0.2s;
-    }
-    .header-btn:hover { background: rgba(255, 255, 255, 0.1); }
+    .header-btn { display: none; }
     .header-btn.show { display: flex; }
-
-    /* Model Badge */
-    .model-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      padding: 4px 10px;
-      background: rgba(168, 85, 247, 0.2);
-      border: 1px solid rgba(168, 85, 247, 0.3);
-      border-radius: 20px;
-      font-size: 10px;
-      color: #c084fc;
-      margin-left: 8px;
-    }
-    .model-badge::before {
-      content: '';
-      width: 6px;
-      height: 6px;
-      background: #22c55e;
-      border-radius: 50%;
-      animation: pulse 2s infinite;
-    }
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
-    }
 
     /* Chat Area */
     .chat-area {
@@ -423,20 +402,8 @@
       .welcome-logo-main { width: 140px; height: 140px; }
     }
     .welcome > p { color: #c084fc; text-align: center; max-width: 400px; margin-bottom: 16px; line-height: 1.6; }
-    .welcome .creator-credit { font-size: 12px; color: rgba(168, 85, 247, 0.6); margin-bottom: 8px; }
+    .welcome .creator-credit { font-size: 12px; color: rgba(168, 85, 247, 0.6); margin-bottom: 30px; }
     .welcome .creator-credit span { color: #f472b6; font-weight: 600; }
-    .welcome .model-info {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 14px;
-      background: rgba(34, 197, 94, 0.15);
-      border: 1px solid rgba(34, 197, 94, 0.3);
-      border-radius: 20px;
-      font-size: 11px;
-      color: #22c55e;
-      margin-bottom: 30px;
-    }
     .quick-actions {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -741,6 +708,179 @@
       transform: translateX(-50%) translateY(0);
     }
     .toast svg { width: 18px; height: 18px; }
+
+    /* Settings Modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(5px);
+      z-index: 200;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    .modal-overlay.show { display: flex; }
+
+    .modal {
+      background: linear-gradient(135deg, #1a0a2e, #16082a);
+      border: 1px solid rgba(168, 85, 247, 0.3);
+      border-radius: 20px;
+      width: 100%;
+      max-width: 500px;
+      max-height: 90vh;
+      overflow: hidden;
+      animation: modalIn 0.3s ease;
+    }
+    @keyframes modalIn {
+      from { opacity: 0; transform: scale(0.9) translateY(20px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .modal-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid rgba(168, 85, 247, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .modal-header h3 {
+      font-size: 18px;
+      font-weight: 600;
+      background: linear-gradient(90deg, #f472b6, #c084fc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .modal-close {
+      padding: 8px;
+      background: transparent;
+      border: none;
+      color: #c084fc;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: background 0.2s;
+    }
+    .modal-close:hover { background: rgba(255, 255, 255, 0.1); }
+
+    .modal-body {
+      padding: 24px;
+      overflow-y: auto;
+      max-height: calc(90vh - 160px);
+    }
+
+    .setting-group {
+      margin-bottom: 24px;
+    }
+    .setting-group:last-child { margin-bottom: 0; }
+
+    .setting-label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      color: #e2e8f0;
+      margin-bottom: 10px;
+    }
+    .setting-description {
+      font-size: 12px;
+      color: rgba(168, 85, 247, 0.6);
+      margin-bottom: 12px;
+    }
+
+    .setting-options {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+    .setting-option {
+      padding: 12px 16px;
+      background: rgba(168, 85, 247, 0.1);
+      border: 2px solid rgba(168, 85, 247, 0.2);
+      border-radius: 12px;
+      color: #c084fc;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+    .setting-option:hover {
+      background: rgba(168, 85, 247, 0.2);
+      border-color: rgba(168, 85, 247, 0.4);
+    }
+    .setting-option.active {
+      background: linear-gradient(135deg, rgba(236, 72, 153, 0.3), rgba(168, 85, 247, 0.3));
+      border-color: #ec4899;
+      color: white;
+    }
+
+    .setting-textarea {
+      width: 100%;
+      padding: 14px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(168, 85, 247, 0.3);
+      border-radius: 12px;
+      color: white;
+      font-family: inherit;
+      font-size: 14px;
+      resize: vertical;
+      min-height: 100px;
+      outline: none;
+      transition: border-color 0.3s;
+    }
+    .setting-textarea::placeholder { color: rgba(168, 85, 247, 0.5); }
+    .setting-textarea:focus { border-color: rgba(236, 72, 153, 0.5); }
+
+    .modal-footer {
+      padding: 16px 24px;
+      border-top: 1px solid rgba(168, 85, 247, 0.2);
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+    }
+    .modal-btn {
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .modal-btn-secondary {
+      background: rgba(168, 85, 247, 0.2);
+      border: 1px solid rgba(168, 85, 247, 0.3);
+      color: #c084fc;
+    }
+    .modal-btn-secondary:hover {
+      background: rgba(168, 85, 247, 0.3);
+    }
+    .modal-btn-primary {
+      background: linear-gradient(135deg, #ec4899, #a855f7);
+      border: none;
+      color: white;
+    }
+    .modal-btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(168, 85, 247, 0.4);
+    }
+
+    /* Current Setting Badge */
+    .current-setting {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      background: rgba(34, 197, 94, 0.2);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      border-radius: 20px;
+      font-size: 11px;
+      color: #22c55e;
+      margin-left: auto;
+    }
   </style>
 </head>
 <body>
@@ -750,12 +890,82 @@
     <div class="bg-blob bg-blob-3"></div>
   </div>
 
-  <!-- Toast Notification -->
+  <!-- Toast -->
   <div class="toast" id="toast">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <path d="M20 6L9 17l-5-5"/>
-    </svg>
-    <span>Kode berhasil disalin!</span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+    <span>Berhasil!</span>
+  </div>
+
+  <!-- Settings Modal -->
+  <div class="modal-overlay" id="settingsModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>⚙️ Pengaturan Sikap AI</h3>
+        <button class="modal-close" onclick="closeSettings()">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <!-- Personality -->
+        <div class="setting-group">
+          <label class="setting-label">🎭 Kepribadian</label>
+          <p class="setting-description">Pilih bagaimana LOYD AI akan berbicara denganmu</p>
+          <div class="setting-options">
+            <div class="setting-option" data-setting="personality" data-value="friendly" onclick="selectOption(this)">😊 Ramah</div>
+            <div class="setting-option" data-setting="personality" data-value="professional" onclick="selectOption(this)">💼 Profesional</div>
+            <div class="setting-option" data-setting="personality" data-value="humorous" onclick="selectOption(this)">😄 Humoris</div>
+            <div class="setting-option" data-setting="personality" data-value="caring" onclick="selectOption(this)">💜 Perhatian</div>
+          </div>
+        </div>
+
+        <!-- Response Style -->
+        <div class="setting-group">
+          <label class="setting-label">📝 Gaya Jawaban</label>
+          <p class="setting-description">Pilih panjang dan detail jawaban</p>
+          <div class="setting-options">
+            <div class="setting-option" data-setting="responseStyle" data-value="concise" onclick="selectOption(this)">📌 Singkat</div>
+            <div class="setting-option" data-setting="responseStyle" data-value="balanced" onclick="selectOption(this)">⚖️ Seimbang</div>
+            <div class="setting-option" data-setting="responseStyle" data-value="detailed" onclick="selectOption(this)">📚 Detail</div>
+            <div class="setting-option" data-setting="responseStyle" data-value="tutorial" onclick="selectOption(this)">🎓 Tutorial</div>
+          </div>
+        </div>
+
+        <!-- Language -->
+        <div class="setting-group">
+          <label class="setting-label">🌐 Bahasa</label>
+          <p class="setting-description">Pilih bahasa utama untuk jawaban</p>
+          <div class="setting-options">
+            <div class="setting-option" data-setting="language" data-value="indonesian" onclick="selectOption(this)">🇮🇩 Indonesia</div>
+            <div class="setting-option" data-setting="language" data-value="english" onclick="selectOption(this)">🇺🇸 English</div>
+            <div class="setting-option" data-setting="language" data-value="mixed" onclick="selectOption(this)">🌏 Campur</div>
+            <div class="setting-option" data-setting="language" data-value="formal_id" onclick="selectOption(this)">📜 Formal ID</div>
+          </div>
+        </div>
+
+        <!-- Emoji Usage -->
+        <div class="setting-group">
+          <label class="setting-label">✨ Penggunaan Emoji</label>
+          <p class="setting-description">Seberapa sering AI menggunakan emoji</p>
+          <div class="setting-options">
+            <div class="setting-option" data-setting="emoji" data-value="none" onclick="selectOption(this)">🚫 Tanpa Emoji</div>
+            <div class="setting-option" data-setting="emoji" data-value="minimal" onclick="selectOption(this)">😊 Sedikit</div>
+            <div class="setting-option" data-setting="emoji" data-value="moderate" onclick="selectOption(this)">😄✨ Sedang</div>
+            <div class="setting-option" data-setting="emoji" data-value="expressive" onclick="selectOption(this)">🎉💜🚀 Banyak</div>
+          </div>
+        </div>
+
+        <!-- Custom Instructions -->
+        <div class="setting-group">
+          <label class="setting-label">✏️ Instruksi Khusus</label>
+          <p class="setting-description">Tambahkan instruksi khusus untuk AI (opsional)</p>
+          <textarea class="setting-textarea" id="customInstructions" placeholder="Contoh: Selalu berikan contoh kode, Jelaskan seperti untuk pemula, Gunakan bahasa gaul, dll..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="modal-btn modal-btn-secondary" onclick="resetSettings()">Reset Default</button>
+        <button class="modal-btn modal-btn-primary" onclick="saveSettings()">💾 Simpan</button>
+      </div>
+    </div>
   </div>
 
   <div class="app-container">
@@ -777,10 +987,16 @@
         </button>
       </div>
 
-      <button class="new-chat-btn" onclick="newChat()">
-        <svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
-        Chat Baru
-      </button>
+      <div class="sidebar-buttons">
+        <button class="new-chat-btn" onclick="newChat()">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+          Chat Baru
+        </button>
+        <button class="settings-btn" onclick="openSettings()">
+          <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+          Pengaturan Sikap
+        </button>
+      </div>
 
       <div class="chat-history">
         <p class="chat-history-title">Riwayat Chat</p>
@@ -790,7 +1006,6 @@
       <div class="sidebar-footer">
         <p><span class="heart">♥</span> Made with love</p>
         <p class="creator">Created by Aryan</p>
-        <p class="powered">⚡ Powered by Groq + Llama 3.1</p>
       </div>
     </aside>
 
@@ -807,9 +1022,11 @@
             <h2 id="headerTitle">Mulai Chat Baru</h2>
             <p>Created by Aryan</p>
           </div>
-          <span class="model-badge">Llama 3.1</span>
         </div>
         <div class="header-actions">
+          <button class="header-btn show" onclick="openSettings()" title="Pengaturan">
+            <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+          </button>
           <button class="header-btn" onclick="newChat()" title="Chat Baru" id="newChatBtn">
             <svg class="icon" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
           </button>
@@ -828,9 +1045,6 @@
             <h1>Halo! Saya LOYD AI</h1>
             <p>Asisten AI cerdas yang siap membantu kamu. Tanyakan apa saja! 💜</p>
             <p class="creator-credit">Dibuat dengan 💜 oleh <span>Aryan</span></p>
-            <div class="model-info">
-              <span>⚡</span> Powered by Groq + Llama 3.1 • Super Fast!
-            </div>
             <div class="quick-actions">
               <button class="quick-action" onclick="setInput('Bantu saya membuat kode ')">
                 <span class="quick-action-icon">💻</span>
@@ -864,50 +1078,30 @@
               <svg viewBox="0 0 24 24" id="sendIcon" stroke="currentColor" fill="none" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
             </button>
           </div>
-          <p class="input-footer">•LOYD AI by Aryan•
+          <p class="input-footer">LOYD AI dibuat oleh Aryan</p>
         </div>
       </div>
     </main>
   </div>
 
   <script>
-    // =============================================
-    // GROQ API CONFIGURATION
-    // =============================================
+    // API Configuration
     const API_KEY = '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';
     const API_URL = 'https://api.groq.com/openai/v1/chat/completions';
     const MODEL = 'llama-3.1-8b-instant';
     const AI_AVATAR = 'https://i.pinimg.com/736x/6e/45/eb/6e45eb8abba5a3ce80173579c5da76bf.jpg';
 
-    const SYSTEM_PROMPT = `Kamu adalah LOYD AI, asisten AI yang sangat cerdas, ramah, dan helpful.
+    // Default Settings
+    const defaultSettings = {
+      personality: 'friendly',
+      responseStyle: 'balanced',
+      language: 'indonesian',
+      emoji: 'moderate',
+      customInstructions: ''
+    };
 
-🤖 IDENTITAS:
-- Nama: LOYD AI
-- Pembuat: Aryan (anak pintar yang bercita-cita menjadi programmer profesional)
-- Teknologi: Powered by Groq + Llama 3.1
-- Versi: 1.0
-
-💜 KEPRIBADIAN:
-- Ramah dan hangat
-- Cerdas dan informatif  
-- Sedikit humoris
-- Supportive dan menyemangati
-
-🎯 KEMAMPUAN:
-- Menjawab pertanyaan dengan akurat
-- Membantu coding dalam berbagai bahasa pemrograman
-- Menulis konten kreatif
-- Menjelaskan konsep kompleks dengan mudah
-- Berbicara dalam Bahasa Indonesia dan Inggris
-
-📝 ATURAN PENTING:
-1. Selalu perkenalkan diri sebagai LOYD AI jika ditanya nama
-2. Jika ditanya pembuat/creator, jawab: "Saya dibuat oleh Aryan! 🧑‍💻 Aryan adalah anak pintar yang bercita-cita menjadi programmer profesional. Dia menciptakan saya untuk membantu orang-orang! 💜"
-3. Jangan pernah mengaku sebagai AI lain (ChatGPT, Claude, Gemini, dll)
-4. Gunakan emoji secukupnya untuk membuat percakapan lebih hidup
-5. Untuk kode, SELALU gunakan code blocks dengan bahasa pemrograman (contoh: \`\`\`javascript atau \`\`\`python)
-6. Berikan jawaban yang terstruktur dan mudah dibaca
-7. Jika ditanya teknologi, sebutkan bahwa kamu menggunakan Groq + Llama 3.1 yang super cepat!`;
+    // Current Settings
+    let settings = { ...defaultSettings };
 
     // State
     let messages = [];
@@ -927,12 +1121,143 @@
     const sidebar = document.getElementById('sidebar');
     const sidebarOverlay = document.getElementById('sidebarOverlay');
     const toast = document.getElementById('toast');
+    const settingsModal = document.getElementById('settingsModal');
+
+    // Build System Prompt based on settings
+    function buildSystemPrompt() {
+      const personalityMap = {
+        friendly: 'Kamu sangat ramah, hangat, dan bersahabat. Gunakan bahasa yang casual dan nyaman seperti berbicara dengan teman.',
+        professional: 'Kamu profesional, formal, dan terstruktur. Berikan jawaban yang lugas dan to-the-point.',
+        humorous: 'Kamu humoris dan suka bercanda. Sisipkan humor dan jokes dalam jawabanmu, tapi tetap informatif.',
+        caring: 'Kamu sangat perhatian dan supportive. Tunjukkan empati dan selalu beri semangat kepada user.'
+      };
+
+      const responseStyleMap = {
+        concise: 'Berikan jawaban yang singkat, padat, dan langsung ke intinya. Maksimal 2-3 paragraf.',
+        balanced: 'Berikan jawaban dengan panjang sedang, cukup detail tapi tidak bertele-tele.',
+        detailed: 'Berikan jawaban yang lengkap dan mendetail dengan penjelasan mendalam.',
+        tutorial: 'Berikan jawaban dalam format tutorial step-by-step yang mudah diikuti.'
+      };
+
+      const languageMap = {
+        indonesian: 'Gunakan Bahasa Indonesia yang baik dan benar.',
+        english: 'Always respond in English.',
+        mixed: 'Boleh campur Bahasa Indonesia dan Inggris secara natural.',
+        formal_id: 'Gunakan Bahasa Indonesia formal dan baku.'
+      };
+
+      const emojiMap = {
+        none: 'JANGAN gunakan emoji sama sekali dalam jawabanmu.',
+        minimal: 'Gunakan emoji sangat sedikit, hanya di akhir kalimat penting.',
+        moderate: 'Gunakan emoji secukupnya untuk membuat percakapan lebih hidup.',
+        expressive: 'Gunakan banyak emoji untuk mengekspresikan emosi dan membuat chat lebih fun!'
+      };
+
+      let prompt = `Kamu adalah LOYD AI, asisten AI cerdas.
+
+🤖 IDENTITAS:
+- Nama: LOYD AI
+- Pembuat: Aryan (anak pintar yang bercita-cita menjadi programmer profesional)
+
+💜 KEPRIBADIAN:
+${personalityMap[settings.personality]}
+
+📝 GAYA JAWABAN:
+${responseStyleMap[settings.responseStyle]}
+
+🌐 BAHASA:
+${languageMap[settings.language]}
+
+✨ EMOJI:
+${emojiMap[settings.emoji]}
+
+🎯 KEMAMPUAN:
+- Menjawab pertanyaan dengan akurat
+- Membantu coding dalam berbagai bahasa pemrograman
+- Menulis konten kreatif
+- Menjelaskan konsep kompleks
+
+⚠️ ATURAN:
+1. Selalu perkenalkan diri sebagai LOYD AI jika ditanya nama
+2. Jika ditanya pembuat, jawab: "Saya dibuat oleh Aryan! Aryan adalah anak pintar yang bercita-cita menjadi programmer profesional."
+3. Jangan mengaku sebagai AI lain (ChatGPT, Claude, dll)
+4. Untuk kode, SELALU gunakan code blocks dengan bahasa (contoh: \`\`\`javascript)`;
+
+      if (settings.customInstructions.trim()) {
+        prompt += `\n\n📌 INSTRUKSI KHUSUS DARI USER:\n${settings.customInstructions}`;
+      }
+
+      return prompt;
+    }
 
     // Initialize
     function init() {
+      loadSettings();
       loadHistory();
       renderHistory();
+      updateSettingsUI();
       messageInput.focus();
+    }
+
+    // Settings Functions
+    function openSettings() {
+      settingsModal.classList.add('show');
+      updateSettingsUI();
+      if (window.innerWidth < 768) toggleSidebar();
+    }
+
+    function closeSettings() {
+      settingsModal.classList.remove('show');
+    }
+
+    function selectOption(el) {
+      const setting = el.dataset.setting;
+      const value = el.dataset.value;
+      
+      // Remove active from siblings
+      el.parentElement.querySelectorAll('.setting-option').forEach(opt => {
+        opt.classList.remove('active');
+      });
+      
+      // Add active to selected
+      el.classList.add('active');
+      
+      // Update settings
+      settings[setting] = value;
+    }
+
+    function updateSettingsUI() {
+      // Update all option buttons
+      document.querySelectorAll('.setting-option').forEach(opt => {
+        const setting = opt.dataset.setting;
+        const value = opt.dataset.value;
+        opt.classList.toggle('active', settings[setting] === value);
+      });
+      
+      // Update custom instructions
+      document.getElementById('customInstructions').value = settings.customInstructions;
+    }
+
+    function saveSettings() {
+      settings.customInstructions = document.getElementById('customInstructions').value;
+      localStorage.setItem('loyd-settings', JSON.stringify(settings));
+      closeSettings();
+      showToast('Pengaturan berhasil disimpan! ✨');
+    }
+
+    function resetSettings() {
+      settings = { ...defaultSettings };
+      updateSettingsUI();
+      showToast('Pengaturan direset ke default');
+    }
+
+    function loadSettings() {
+      try {
+        const saved = localStorage.getItem('loyd-settings');
+        if (saved) settings = { ...defaultSettings, ...JSON.parse(saved) };
+      } catch (e) {
+        settings = { ...defaultSettings };
+      }
     }
 
     // Sidebar
@@ -970,10 +1295,10 @@
     }
 
     // Show toast
-    function showToast(message = 'Kode berhasil disalin!') {
+    function showToast(message) {
       toast.querySelector('span').textContent = message;
       toast.classList.add('show');
-      setTimeout(() => toast.classList.remove('show'), 2000);
+      setTimeout(() => toast.classList.remove('show'), 2500);
     }
 
     // Copy code
@@ -982,35 +1307,23 @@
       if (codeEl) {
         navigator.clipboard.writeText(codeEl.textContent).then(() => {
           btn.classList.add('copied');
-          btn.innerHTML = `
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M20 6L9 17l-5-5"/>
-            </svg>
-            Tersalin!
-          `;
-          showToast();
+          btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Tersalin!`;
+          showToast('Kode berhasil disalin!');
           setTimeout(() => {
             btn.classList.remove('copied');
-            btn.innerHTML = `
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
-                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
-              </svg>
-              Salin
-            `;
+            btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Salin`;
           }, 2000);
         });
       }
     }
 
-    // Format content with code blocks
+    // Format content
     let codeBlockCounter = 0;
     function formatContent(content) {
       if (!content) return '';
-      
       let formatted = content;
 
-      // Code blocks with copy button
+      // Code blocks
       formatted = formatted.replace(/```(\w+)?\n([\s\S]*?)```/g, (match, lang, code) => {
         const codeId = `code-${Date.now()}-${codeBlockCounter++}`;
         const language = lang || 'code';
@@ -1020,7 +1333,7 @@
               <span class="code-block-lang">${escapeHtml(language)}</span>
               <button class="code-copy-btn" onclick="copyCode(this, '${codeId}')">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                  <rect x="9" y="9" width="13" height="13" rx="2"/>
                   <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
                 </svg>
                 Salin
@@ -1033,26 +1346,15 @@
         `;
       });
 
-      // Inline code
       formatted = formatted.replace(/`([^`]+)`/g, (m, code) => `<code>${escapeHtml(code)}</code>`);
-      
-      // Bold
       formatted = formatted.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-      
-      // Italic  
       formatted = formatted.replace(/(?<!\*)\*([^*]+)\*(?!\*)/g, '<em>$1</em>');
-      
-      // Lists
       formatted = formatted.replace(/^\s*[-*]\s+(.+)$/gm, '<li>$1</li>');
       formatted = formatted.replace(/(<li>.*<\/li>\n?)+/g, '<ul>$&</ul>');
       
-      // Paragraphs
       formatted = formatted.split(/\n\n+/).map(p => {
         p = p.trim();
-        if (!p) return '';
-        if (p.startsWith('<div') || p.startsWith('<ul') || p.startsWith('<ol') || p.startsWith('<li')) {
-          return p;
-        }
+        if (!p || p.startsWith('<div') || p.startsWith('<ul') || p.startsWith('<li')) return p;
         return `<p>${p.replace(/\n/g, '<br>')}</p>`;
       }).join('');
 
@@ -1099,13 +1401,11 @@
       }).join('');
 
       if (wasAtBottom) {
-        requestAnimationFrame(() => {
-          chatArea.scrollTop = chatArea.scrollHeight;
-        });
+        requestAnimationFrame(() => chatArea.scrollTop = chatArea.scrollHeight);
       }
     }
 
-    // Send message - GROQ API
+    // Send message
     async function sendMessage() {
       const content = messageInput.value.trim();
       if (!content || isLoading) return;
@@ -1129,7 +1429,7 @@
           body: JSON.stringify({
             model: MODEL,
             messages: [
-              { role: 'system', content: SYSTEM_PROMPT },
+              { role: 'system', content: buildSystemPrompt() },
               ...messages.slice(0, -1)
             ],
             stream: true,
@@ -1138,10 +1438,7 @@
           })
         });
 
-        if (!response.ok) {
-          const errorData = await response.json().catch(() => ({}));
-          throw new Error(errorData.error?.message || `API Error: ${response.status}`);
-        }
+        if (!response.ok) throw new Error(`API Error: ${response.status}`);
 
         const reader = response.body.getReader();
         const decoder = new TextDecoder();
@@ -1170,8 +1467,7 @@
         }
         saveHistory();
       } catch (error) {
-        console.error('Error:', error);
-        messages[messages.length - 1].content = `❌ Maaf, terjadi kesalahan: ${error.message}\n\nCoba lagi ya! 💜`;
+        messages[messages.length - 1].content = `❌ Terjadi kesalahan. Coba lagi ya!`;
         renderMessages();
       } finally {
         isLoading = false;
@@ -1183,11 +1479,11 @@
     function updateSendButton() {
       sendBtn.disabled = isLoading;
       sendIcon.innerHTML = isLoading 
-        ? '<circle cx="12" cy="12" r="10" stroke="currentColor" fill="none" stroke-width="2" stroke-dasharray="30" stroke-linecap="round"><animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur="1s" repeatCount="indefinite"/></circle>'
+        ? '<circle cx="12" cy="12" r="10" stroke="currentColor" fill="none" stroke-width="2" stroke-dasharray="30"><animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur="1s" repeatCount="indefinite"/></circle>'
         : '<path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>';
     }
 
-    // Save history
+    // History functions
     function saveHistory() {
       if (messages.length > 1) {
         const first = messages.find(m => m.role === 'user');
@@ -1209,7 +1505,6 @@
       }
     }
 
-    // Load history
     function loadHistory() {
       try {
         const saved = localStorage.getItem('loyd-history');
@@ -1217,7 +1512,6 @@
       } catch (e) { chatHistory = []; }
     }
 
-    // Render history
     function renderHistory() {
       if (chatHistory.length === 0) {
         chatHistoryEl.innerHTML = '<p class="chat-history-empty">Belum ada riwayat</p>';
@@ -1237,7 +1531,6 @@
       `).join('');
     }
 
-    // New chat
     function newChat() {
       messages = [];
       renderMessages();
@@ -1245,7 +1538,6 @@
       if (window.innerWidth < 768) toggleSidebar();
     }
 
-    // Load chat
     function loadChat(id) {
       const chat = chatHistory.find(c => c.id === id);
       if (chat) { 
@@ -1256,7 +1548,6 @@
       if (window.innerWidth < 768) toggleSidebar();
     }
 
-    // Delete chat
     function deleteChat(e, id) {
       e.stopPropagation();
       chatHistory = chatHistory.filter(c => c.id !== id);
@@ -1264,7 +1555,19 @@
       renderHistory();
     }
 
-    // Initialize app
+    // Close modal on escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && settingsModal.classList.contains('show')) {
+        closeSettings();
+      }
+    });
+
+    // Close modal on overlay click
+    settingsModal.addEventListener('click', (e) => {
+      if (e.target === settingsModal) closeSettings();
+    });
+
+    // Initialize
     init();
   </script>
 </body>
